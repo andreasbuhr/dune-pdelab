@@ -84,6 +84,8 @@ namespace ArpackGeneo
     //! Perform matrix-vector product w = A*v
     inline void multMv (Real* v, Real* w)
     {
+      static int callcounter = 0;
+      std::cout << callcounter++ << " call to multMv" << std::endl;
       // get vector v as an object of appropriate type
       arrayToDomainBlockVector(v,domainBlockVector);
 
@@ -100,6 +102,7 @@ namespace ArpackGeneo
 
     inline void multMvB (Real* v, Real* w)
     {
+      std::cout << "call to multMvB" << std::endl;
       // get vector v as an object of appropriate type
       arrayToDomainBlockVector(v,domainBlockVector);
 

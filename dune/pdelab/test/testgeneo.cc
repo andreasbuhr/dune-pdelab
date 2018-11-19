@@ -100,8 +100,9 @@ public:
 
 void driver(std::string basis_type, std::string part_unity_type) {
 
+
   int cells = 100;
-  int overlap = 1;
+  int overlap = 10;
 
   // define parameters
   const unsigned int dim = 2;
@@ -257,6 +258,10 @@ void driver(std::string basis_type, std::string part_unity_type) {
   typedef Dune::PDELab::LocalFunctionSpace<GFS, Dune::PDELab::AnySpaceTag> LFS;
   LFS lfs(gfs);
 
+  // inform user
+  if(verb > 0){
+    std::cout << "running with " << part_unity_type << " partition of unity and " << basis_type << " basis type." << std::endl;
+  }
 
   // Generate a partition of unity
   std::shared_ptr<V> part_unity;
@@ -270,7 +275,7 @@ void driver(std::string basis_type, std::string part_unity_type) {
 
   // Choose how many eigenvalues to compute
   int nev = 10;
-  int nev_arpack = 10;
+  int nev_arpack = 100;
 
   // Construct per-subdomain basis functions
   std::shared_ptr<Dune::PDELab::SubdomainBasis<V> > subdomain_basis;
@@ -319,9 +324,9 @@ int main(int argc, char **argv)
     // initialize MPI, finalize is done automatically on exit
     Dune::MPIHelper::instance(argc,argv);
 
-    driver("geneo", "standard");
+    //driver("geneo", "standard");
     driver("geneo", "sarkis");
-    driver("lipton_babuska", "standard");
+    //driver("lipton_babuska", "standard");
 
     return 0;
   }

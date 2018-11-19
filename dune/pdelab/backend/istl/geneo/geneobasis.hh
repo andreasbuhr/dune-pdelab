@@ -7,6 +7,8 @@
 #include <dune/pdelab/backend/istl/geneo/subdomainbasis.hh>
 #include <dune/pdelab/backend/istl/geneo/arpackpp_geneo.hh>
 
+#include <dune/istl/matrixmarket.hh>
+
 #if HAVE_ARPACKPP
 
 namespace Dune {
@@ -56,6 +58,11 @@ namespace Dune {
           }
         }
 
+        if(verbose > 0){
+          Dune::storeMatrixMarket(native(AF_ovlp), "AF_ovlp.mm");
+          Dune::storeMatrixMarket(native(AF_exterior), "AF_exterior.mm");
+          Dune::storeMatrixMarket(native(part_unity), "part_unity.mm");
+        }
         // Setup Arpack for solving generalized eigenproblem
         ArpackGeneo::ArPackPlusPlus_Algorithms<ISTLM, X> arpack(native(AF_exterior));
         double eps = 0.0;
@@ -65,6 +72,13 @@ namespace Dune {
 
         arpack.computeGenNonSymMinMagnitude(native(ovlp_mat), eps, eigenvectors, eigenvalues, shift);
 
+        // print eigenvalues:
+        if (verbose > 0) {
+          std::cout << "Eigenvalues: " << std::endl;
+          for(size_t ind = 0; ind < eigenvalues.size(); ++ind){
+            std::cout << ind << "\t" << eigenvalues[ind] << std::endl;
+          }
+        }
         // Count eigenvectors below threshold
         int cnt = -1;
         if (eigenvalue_threshold >= 0) {
